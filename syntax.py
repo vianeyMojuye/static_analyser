@@ -84,6 +84,11 @@ def result(errors, warnings):
       
       if(len(errors) == 0 and len(warnings)==0):
          print("\n\n Syntaxe du code correct \n")
+      else :
+          for w in warnings:
+            print("Warnings ", w)
+          for e in errors:
+            print("Errors ", e)
 
 
 
