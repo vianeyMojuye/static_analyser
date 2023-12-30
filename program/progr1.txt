@@ -1,0 +1,15 @@
+start:
+   points{
+          A = (1,2),
+          B = (5,3)
+
+   },
+   move{
+         B = (6,1)
+     },
+   constraints{
+    	
+        A = [ 2*A.y-A.x <= 6, A.x > B.x ],
+        B = [A.x > B.x ]	
+   }
+end;
