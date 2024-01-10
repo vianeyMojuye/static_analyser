@@ -91,8 +91,12 @@ def read_file(file_path, warnings, errors):
                     elif reading_block == "constraints":
                         # Remove square brackets and spaces, then split into expressions
                         expressions = [expr.strip() for expr in value[1:-1].replace(' ', '').split(',')]
-                        constraints[key] = expressions
-
+                        if  key in constraints.keys():
+                             
+                             constraints[key]= constraints[key]+ expressions
+                             
+                        else :
+                            constraints[key] = expressions
                 #verify if the points present in the move block have already been declared in points block
                 for m in moves.keys():
                      if not(m in points.keys()):
@@ -110,6 +114,37 @@ def has_duplicates(seq):
     unique_list = [x for x in seq if x not in seen and not seen.append(x)]
     return len(seq) != len(unique_list)
 
+
+
+def eval_constraints(point,warnings, errors, old_constr):
+    """
+        evalue la liste de contraintes d'un, verifie si il n y a aucune incoherence: inegalité fausse 
+                                                        contrainte contradictoire
+        point (Point) : point à verifier 
+        old_constr ([String]): liste des contraintes initiale(representation faite avant la substitution)
+    
+    """
+    constraints = point.constraints
+    c = []
+    # Remplace les occurrences de X, Y, etc. par les valeurs correspondantes
+    for expression in constraints :
+        expression = expression.replace('X', str(point.coordinates[0]))
+        expression = expression.replace('Y', str(point.coordinates[1]))
+        c.append(expression)
+    constraints = c
+    for i in range(0, len(constraints)):
+        try:
+            resultat = eval(constraints[i])
+            
+            if not resultat:
+                errors.append(f"Point: {point.name} - Erreur constraint: {old_constr[i]}.")
+        except Exception as e:
+            # En cas d'erreur d'évaluation (par exemple, division par zéro), considérez l'expression comme fausse.
+            
+            errors.append(f"Point: {point.name} - Error constraint: {old_constr[i]}")
+
+    
+
 def update_constraints(points,warnings, errors):
     """Updates the constraint expression of all the points defined in the program
        Args:
@@ -117,10 +152,16 @@ def update_constraints(points,warnings, errors):
 
     """
     for point in points:
+        #recuperons la liste des contraintes avant la mise à jour
+        old_constr = point.constraints
         # Met à jour chaque expression de contrainte pour le point
         point.constraints = [substitute_coordinates(expr, point, points,warnings, errors) for expr in point.constraints]
+        # evaluons si la liste de contraintes est coherente: existe-t-il de contraintes contradictoires? ou de contraintes fausses?
+        eval_constraints(point,warnings, errors, old_constr)
+            
+    
 
-
+      
 def create_points(points, moves, constraints,warnings, errors):
     """ Read a file , extract all the relavant information then creates points according to the class Point
         Args:
@@ -211,6 +252,8 @@ def draw_polyhedra(point_objects):
     points = []
     constraints = []
     # Afficher les informations pour chaque point
+    for point_object in point_objects:
+        print(point_object)
     for point_object in point_objects:
           points.append(point_object.coordinates)
           constraints.append(point_object.constraints)

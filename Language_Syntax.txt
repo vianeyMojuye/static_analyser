@@ -1,0 +1,101 @@
+
+========================= valid  Program ======================================
+start:
+   points{
+          A = (1,2),
+          B = (5,3)
+
+   },
+   move{
+         B = (6,1)
+     },
+   constraints{
+    	
+        A = [ 2*A.y-A.x <= 6, A.x > B.x ],
+        B = [A.x > B.x ]	
+   }
+end;
+========================================================================
+
+Let's represent the syntax associated to this language
+
+<program> ::= 'start:'    
+                      'points'{ <pointRepList>* },
+                      'move'{<pointRepList>* },
+                      'constraints'{ <constrRepList>* }
+               'end;'
+
+<sequence> ::= <pointRepList>* 
+<sequenceConst> ::= <boolExprList>* 
+
+<pointRepList> ::= <pointRep> | <pointRep>, <pointRepList>
+<constrRepList> ::=  <constrRep> | <consrtRep>, <constrRepList>
+
+
+<pointRep> ::= <identifier> '='  '('<num>' , '<num>')' 
+<constrRep> ::= <identifier> '='  '[<boolExprList>*]' 
+
+<boolExprList> ::= <boolExpr> | <boolExpr>, <boolExprList>
+
+
+⟨expr⟩ ::= ⟨arithExpr⟩ | ⟨boolExpr⟩
+
+<boolExpr> ::= ⟨arithExpr⟩ <bolOp> ⟨arithExpr⟩ | <boolExpr> <logOp> <boolExpr>| <boolExpr> | <unaryOp> <boolExpr>| <bool> 
+
+⟨arithExpr⟩ ::= ⟨term⟩ | <term> <binOp> <arithExpr>
+<term> ::= <factor> | <factor> <binOp> <term>
+<factor> ::= <num> | <var> | (<arithExpr>)
+<binOp> ::=  ‘+’ | ‘-’ | ‘*’ | ‘/’
+<bolOp> ::=  ‘<’ | ‘>’ | ‘==’ | ‘!=’ | ‘>=’ | ‘<=’
+<logOp> ::= and | or
+unaryOp ::= not
+<bool> ::= ’True’ | ’False’
+⟨var⟩ : := ⟨identifier⟩.'x' | ⟨identifier⟩.'y'
+<num> ::= <digit>+ | '-'(<digit>)+
+<identifier> ::= <letter> (<letter> | <digit>)*
+<letter> ::= ‘a’ | ‘b’ | ‘c’ | ... | ‘z’ | ‘A’ | ‘B’ | ‘C’ | ... | ‘Z’
+<digit> ::= ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’
+
+
+=========================================================================================
+ Semantic
+
+
+σ : <var> → Z ∪ {True, False}
+
+[True]  ------------------
+        (True, σ) ⇝ True
+
+[False]  ------------------
+        (False, σ) ⇝ False
+
+[Var]    x ∈ < Var >
+       ------------------
+        (x, σ) ⇝ σ(x)
+
+[Int]    v ∈ Z
+       -------------
+        (v, σ) ⇝ v
+
+[Op]     (x1, σ) ⇝ v1 (x2, σ) ⇝ v2 v1 ⊕ v2 = v
+      ----------------------------------------------
+         (x1 ⊕ x2, σ) ⇝ v
+
+[Simple pointRep]     (e, σ) ⇝ v  σ′ = σ[x → v]
+                    ------------------------------
+                        (x=e, Σ • σ) ⇝ Σ • σ'
+
+
+[Sequence]    (s1, Σ • σ) ⇝ Σ • σ′(s2, Σ • σ′) ⇝ Σ • σ′′
+           ------------------------------------------------
+              (s1;s2, Σ • σ) ⇝ Σ • σ′′
+
+
+[Simple constraint or boolExpr]     (e, σ) ⇝ v  σ′ = σ[x → v]
+                    ------------------------------  where v is a list of possible value of x
+                        (x=e, Σ • σ) ⇝ Σ • σ'
+
+
+[SequenceConst]    (s1, Σ • σ) ⇝ Σ • σ′(s2, Σ • σ′) ⇝ Σ • σ′′
+           ------------------------------------------------
+              (s1;s2, Σ • σ) ⇝ Σ • σ′′

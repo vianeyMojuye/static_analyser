@@ -63,7 +63,7 @@ def check_syntax(file_path, warnings, errors):
     if  re.search(pattern, program, re.DOTALL) is None :
       # Recherche de la structure dans le programme
       if re.search(pointsthenmove, program, re.DOTALL) is None:
-        errors.append("Erreur Syntaxe ou structure invalide.\nIl se peut que l'ordre de denition des blocs soit ne soit pas  respecte.\nLes blocs doivent etre defini de la facon suivante: Points{...}, move{...}, constraints{...} ")
+        errors.append("Erreur Syntaxe ou structure invalide.\nIl se peut que l'ordre de definition des blocs ne soit pas  respecte.\nLes blocs doivent etre defini de la facon suivante: Points{...}, move{...}, constraints{...} ")
        # Vérification des expressions régulières pour le programme complet
       if not (re.match(r'^\s*start:', program) and re.search(r'end;$', program)):
         errors.append("Erreur de structure: 'start:' ou 'end;' manquants")
