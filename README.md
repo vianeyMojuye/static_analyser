@@ -24,8 +24,9 @@ Il Y a trois differents exemples de programme dans le folder program :
     
 pour tester ces differents programmes, il suffit de modifier la ligne 5 du ficher main.py avant de lancer l'execution.
    ligne 5 :    
-            file_path = './program/progr3.txt' pour analyser le progr3.txt
                 
             file_path = './program/progr2.txt' pour analyser le progr2.txt
                
             file_path = './program/progr1.txt' pour analyser le progr1.txt
+
+            file_path = './program/progr3.txt' pour analyser le progr3.txt
