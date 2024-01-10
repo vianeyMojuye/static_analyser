@@ -3,13 +3,18 @@ Analyse Statique d'un langage defini permettant de representer le polyedre corre
 
 - La syntaxe et Semantique du langage disponible dans le fichier Language_syntax.txt:
    vous y trouverez :
+
      . Un exemple de programme correct
+
      . La Syntaxe
+
      . La sémantique
 
 Pour Executer le projet il faut: 
-     Avoir installer une version python sur votre machine (3.10 et plus)
-     -soit  cloner le projet sur votre machine
+
+   Avoir installer une version python sur votre machine (3.10 et plus)
+   
+      -soit  cloner le projet sur votre machine
      -ou bien de telecharger la version ziper, puis le dezipper en local.
    Ensuite, il faut se positionner a la racine du projet ie :
         entrez dans le folder STATIC_ANALYSER
